@@ -3,10 +3,9 @@ import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import gsap from "gsap";
 import { useEffect, useRef, useCallback } from "react";
 
-
 export const useGsapTimeline = <T extends HTMLElement>(
   gsapTimelineFactory: () => gsap.core.Timeline,
-) => { 
+) => {
   const animationScopeRef = useRef<T>(null);
   const timelineRef = useRef<gsap.core.Timeline>();
   const frame = useCurrentFrame();
@@ -29,8 +28,6 @@ export const useGsapTimeline = <T extends HTMLElement>(
   return animationScopeRef;
 };
 
-
-
 const DiceStackAnimation = () => {
   const n = 19;
   const trayRef = useRef<HTMLDivElement>(null);
@@ -42,9 +39,9 @@ const DiceStackAnimation = () => {
   }
 
   const rots = [
-    { ry: 90, a: 0.4 }, 
-    { ry: 270, a: 0.5 }, 
-    { ry: 0, a: 0.85 }, 
+    { ry: 90, a: 0.4 },
+    { ry: 270, a: 0.5 },
+    { ry: 0, a: 0.85 },
   ];
 
   useEffect(() => {
@@ -79,7 +76,12 @@ const DiceStackAnimation = () => {
               defaults: { ease: "power3.inOut", duration: 1 },
             });
 
-            tl.fromTo(cube, { rotateY: -90 }, { rotateY: 90, ease: "power1.inOut", duration: 2 })
+            tl
+            .fromTo(
+              cube,
+              { rotateY: -90 },
+              { rotateY: 90, ease: "power1.inOut", duration: 2 },
+            )
               .fromTo(
                 faces,
                 {
@@ -102,7 +104,7 @@ const DiceStackAnimation = () => {
               );
 
             // Add to master timeline with a stagger based on index
-            masterTimeline.add(tl, i * 0.05); 
+            masterTimeline.add(tl, i * 0.05);
 
             const progressVal = i / n;
             tl.progress(progressVal); // Then set the progress of the child timeline
@@ -114,23 +116,36 @@ const DiceStackAnimation = () => {
       trayTl
         .from(
           trayRef.current,
-          { yPercent: -3, duration: 2, ease: "power1.inOut", yoyo: true, repeat: -1 },
+          {
+            yPercent: -3,
+            duration: 2,
+            ease: "power1.inOut",
+            yoyo: true,
+            repeat: -1,
+          },
           0,
         )
         .fromTo(
           trayRef.current,
           { rotate: -15 },
-          { rotate: 15, duration: 4, ease: "power1.inOut", yoyo: true, repeat: -1 },
-          0,
-        )
-        .from(
-          dieRefs.current.filter((el) => el) as gsap.DOMTarget[],
-          { duration: 0.01, opacity: 0, stagger: { each: -0.05, ease: "power1.in" } },
+          {
+            rotate: 15,
+            duration: 4,
+            ease: "power1.inOut",
+            yoyo: true,
+            repeat: -1,
+          },
           0,
         )
         .to(
           trayRef.current,
-          { scale: 1.2, duration: 2, ease: "power3.inOut", yoyo: true, repeat: -1 },
+          {
+            scale: 1.2,
+            duration: 2,
+            ease: "power3.inOut",
+            yoyo: true,
+            repeat: -1,
+          },
           0,
         );
 
@@ -144,7 +159,9 @@ const DiceStackAnimation = () => {
     (node: HTMLDivElement | null) => {
       // animationTimelineRef is a RefObject from useGsapTimeline
       if (animationTimelineRef) {
-        (animationTimelineRef as React.RefObject<HTMLDivElement | null>).current = node;
+        (
+          animationTimelineRef as React.RefObject<HTMLDivElement | null>
+        ).current = node;
       }
       povRefLocal.current = node;
     },
@@ -152,36 +169,34 @@ const DiceStackAnimation = () => {
   );
 
   return (
-    <>
-      <AbsoluteFill
-        ref={combinedRef}
-        className="dice-animation-container w-full h-full flex items-center justify-center font-black bg-black overflow-hidden"
-      >
-        <div className="dice-animation-tray relative" ref={trayRef}>
-          {[...Array(n)].map((_, i) => (
-            <div
-              key={i}
-              className="dice-animation-die w-[400px] h-[55px] pb-[9px] [perspective:999px]"
-              ref={(el) => {
-                dieRefs.current[i] = el;
-              }}
-            >
-              <div className="dice-animation-cube absolute w-full h-full [transform-style:preserve-3d]">
-                <div className="dice-animation-face absolute w-full h-full flex items-center justify-center backface-hidden text-[48px]">
-                  代码11
-                </div>
-                <div className="dice-animation-face absolute w-full h-full flex items-center justify-center backface-hidden text-[55px]">
-                  DRIVEN
-                </div>
-                <div className="dice-animation-face absolute w-full h-full flex items-center justify-center backface-hidden text-[55px]">
-                  ANIMATION
-                </div>
+    <AbsoluteFill
+      ref={combinedRef}
+      className="dice-animation-container w-full h-full flex items-center justify-center font-black bg-black overflow-hidden"
+    >
+      <div className="dice-animation-tray relative" ref={trayRef}>
+        {[...Array(n)].map((_, i) => (
+          <div
+            key={i}
+            className="dice-animation-die w-[400px] h-[55px] pb-[9px] [perspective:999px]"
+            ref={(el) => {
+              dieRefs.current[i] = el;
+            }}
+          >
+            <div className="dice-animation-cube absolute w-full h-full [transform-style:preserve-3d]">
+              <div className="dice-animation-face absolute w-full h-full flex items-center justify-center backface-hidden text-[48px]">
+                代码之力
+              </div>
+              <div className="dice-animation-face absolute w-full h-full flex items-center justify-center backface-hidden text-[55px]">
+                DRIVEN
+              </div>
+              <div className="dice-animation-face absolute w-full h-full flex items-center justify-center backface-hidden text-[55px]">
+                ANIMATION
               </div>
             </div>
-          ))}
-        </div>
-      </AbsoluteFill>
-    </>
+          </div>
+        ))}
+      </div>
+    </AbsoluteFill>
   );
 };
 
